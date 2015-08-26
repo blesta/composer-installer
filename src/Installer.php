@@ -18,12 +18,7 @@ class Installer extends LibraryInstaller
     public function getInstallPath(PackageInterface $package)
     {
         $type = $package->getType();
-
-        $this->io->write($type);
-
         $supportedType = $this->supportedType($type);
-
-        $this->io->write($supportedType);
 
         if ($supportedType === false) {
             throw new InvalidArgumentException(
@@ -67,9 +62,7 @@ class Installer extends LibraryInstaller
      */
     public function supports($packageType)
     {
-        $this->io->write($packageType);
         $supportedType = $this->supportedType($packageType);
-        $this->io->write($supportedType);
 
         if ($supportedType === false) {
             return false;
