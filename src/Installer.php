@@ -97,7 +97,7 @@ class Installer extends LibraryInstaller
     {
         $supportedType = false;
 
-        $baseType = substr($type, 0, strpos($type, '-')-1);
+        $baseType = substr($type, 0, strpos($type, '-'));
 
         if (array_key_exists($baseType, $this->supportedTypes)) {
             $supportedType = $baseType;
