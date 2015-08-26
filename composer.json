@@ -1,6 +1,6 @@
 {
     "name": "blesta/composer-installer",
-    "type": "composer-plugin",
+    "type": "composer-installer",
     "require": {
         "composer/installers": "~1.0"
     },

@@ -67,7 +67,9 @@ class Installer extends LibraryInstaller
      */
     public function supports($packageType)
     {
+        $this->io->write($packageType);
         $supportedType = $this->supportedType($packageType);
+        $this->io->write($supportedType);
 
         if ($supportedType === false) {
             return false;
