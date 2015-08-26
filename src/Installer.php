@@ -18,7 +18,12 @@ class Installer extends LibraryInstaller
     public function getInstallPath(PackageInterface $package)
     {
         $type = $package->getType();
+
+        $this->io->write($type);
+
         $supportedType = $this->supportedType($type);
+
+        $this->io->write($supportedType);
 
         if ($supportedType === false) {
             throw new InvalidArgumentException(
