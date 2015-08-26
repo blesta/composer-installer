@@ -1,0 +1,17 @@
+{
+    "name": "blesta/composer-installer",
+    "type": "composer-installer",
+    "require": {
+        "composer/installers": "~1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Blesta\\Composer\\Installer\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Blesta\\Composer\\Installer\\Tests": "tests/"
+        }
+    }
+}
