@@ -13,5 +13,8 @@
         "psr-4": {
             "Blesta\\Composer\\Installer\\Tests": "tests/"
         }
+    },
+    "extra": {
+        "class": "Blesta\\Composer\\Installer\\Installer"
     }
 }
