@@ -1,5 +1,7 @@
 # Composer Installer
 
+[![Build Status](https://travis-ci.org/blesta/composer-installer.svg)](https://travis-ci.org/blesta/composer-installer)
+
 A library for installing Blesta extensions using [composer](http://getcomposer.org).
 
 ## Usage
