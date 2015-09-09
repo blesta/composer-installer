@@ -8,5 +8,7 @@ php:
 before_script:
   - composer install
 script:
-  - ./vendor/bin/phpunit --coverage-text
+  - ./vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml
   - ./vendor/bin/phpcs --extensions=php --standard=PSR2 ./src ./tests
+after_script:
+- php ./vendor/bin/coveralls -v
