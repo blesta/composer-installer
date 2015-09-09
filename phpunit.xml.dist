@@ -8,12 +8,12 @@
 >
     <testsuites>
         <testsuite name="Unit">
-            <directory suffix=".php">./tests/unit</directory>
+            <directory suffix=".php">tests/Unit</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
-            <directory suffix=".php">./src</directory>
+            <directory suffix=".php">src</directory>
         </whitelist>
     </filter>
 </phpunit>
