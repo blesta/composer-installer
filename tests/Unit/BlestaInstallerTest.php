@@ -19,6 +19,7 @@ class BlestaInstallerTest extends PHPUnit_Framework_TestCase
             'gateway-merchant' => 'components/gateways/merchant/',
             'gateway-nonmerchant' => 'components/gateways/nonmerchant/',
             'module' => 'components/modules/',
+            'messenger' => 'components/messenger/',
             'invoice-template' => 'components/invoice_templates/',
             'report' => 'components/reports/',
         );
