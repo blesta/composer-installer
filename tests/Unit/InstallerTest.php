@@ -54,6 +54,7 @@ class InstallerTest extends PHPUnit_Framework_TestCase
         return array(
             array('blesta-plugin', 'plugins/name/'),
             array('blesta-module', 'components/modules/name/'),
+            array('blesta-messenger', 'components/messenger/name/'),
             array('blesta-gateway-merchant', 'components/gateways/merchant/name/'),
             array('blesta-gateway-nonmerchant', 'components/gateways/nonmerchant/name/'),
             array('blesta-invoice-template', 'components/invoice_templates/name/'),
@@ -152,6 +153,7 @@ class InstallerTest extends PHPUnit_Framework_TestCase
         return array(
             array('blesta-plugin', true),
             array('blesta-module', true),
+            array('blesta-messenger', true),
             array('blesta-gateway-merchant', true),
             array('blesta-gateway-nonmerchant', true),
             array('blesta-invoice-template', true),

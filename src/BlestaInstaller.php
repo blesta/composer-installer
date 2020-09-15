@@ -10,6 +10,7 @@ class BlestaInstaller extends BaseInstaller
         'gateway-merchant' => 'components/gateways/merchant/{$name}/',
         'gateway-nonmerchant' => 'components/gateways/nonmerchant/{$name}/',
         'module' => 'components/modules/{$name}/',
+        'messenger' => 'components/messengers/{$name}/',
         'invoice-template' => 'components/invoice_templates/{$name}/',
         'report' => 'components/reports/{$name}/',
     );
