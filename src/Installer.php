@@ -1,101 +1,73 @@
 <?php
+
 namespace Blesta\Composer\Installer;
 
-use Composer\Installer\LibraryInstaller;
-use Composer\Package\PackageInterface;
-use Composer\Repository\InstalledRepositoryInterface;
-use InvalidArgumentException;
+use Composer\Composer;
+use Composer\IO\IOInterface;
+use Composer\Plugin\PluginInterface;
 
-class Installer extends LibraryInstaller
+class Installer implements PluginInterface
 {
-    protected $supportedTypes = array(
-        'blesta' => 'BlestaInstaller'
-    );
-
     /**
-     * {@inheritDoc}
+     * @var Composer
      */
-    public function getInstallPath(PackageInterface $package)
-    {
-        $type = $package->getType();
-        $supportedType = $this->supportedType($type);
-
-        if ($supportedType === false) {
-            throw new InvalidArgumentException(
-                'Sorry the package type of this package is not supported.'
-            );
-        }
-
-        $class = 'Blesta\\Composer\\Installer\\' . $this->supportedTypes[$supportedType];
-        $installer = new $class($package, $this->composer, $this->io);
-
-        return $installer->getInstallPath($package, $supportedType);
-    }
+    protected Composer $composer;
 
     /**
-     * {@inheritDoc}
+     * @var IOInterface
      */
-    public function uninstall(InstalledRepositoryInterface $repo, PackageInterface $package)
-    {
-        if (!$repo->hasPackage($package)) {
-            throw new InvalidArgumentException(
-                sprintf('Package is not installed: %s', $package)
-            );
-        }
-
-        $repo->removePackage($package);
-
-        $installPath = $this->getInstallPath($package);
-        $this->io->write(
-            sprintf(
-                'Deleting %s - %s',
-                $installPath,
-                $this->filesystem->removeDirectory($installPath)
-                ? '<comment>deleted</comment>'
-                : '<error>not deleted</error>'
-            )
-        );
-    }
+    protected IOInterface $io;
 
     /**
-     * {@inheritDoc}
+     * @var InstallerPlugin
      */
-    public function supports($packageType)
-    {
-        $supportedType = $this->supportedType($packageType);
-
-        if ($supportedType === false) {
-            return false;
-        }
-
-        $class = 'Blesta\\Composer\\Installer\\' . $this->supportedTypes[$supportedType];
-        $installer = new $class(null, $this->composer, $this->io);
-        $locations = $installer->getLocations();
-
-        foreach ($locations as $type => $path) {
-            if ($supportedType . '-' . $type === $packageType) {
-                return true;
-            }
-        }
-        return false;
-    }
+    protected InstallerPlugin $installer;
 
     /**
-     * Find the matching installer type
+     * Activate the plugin
      *
-     * @param string $type
-     * @return boolean|string
+     * @param Composer $composer
+     * @param IOInterface $io
+     * @return void
      */
-    protected function supportedType($type)
+    public function activate(Composer $composer, IOInterface $io): void
     {
-        $supportedType = false;
+        $this->composer = $composer;
+        $this->io = $io;
+        $this->installer = new InstallerPlugin($io, $composer);
+        $composer->getInstallationManager()->addInstaller($this->installer);
+    }
 
-        $baseType = substr($type, 0, strpos($type, '-'));
+    /**
+     * Remove any hooks from Composer
+     *
+     * This method is called when the plugin is being deactivated.
+     * No cleanup is needed as this plugin doesn't add any hooks that need to be removed.
+     * The InstallerPlugin is automatically removed from the InstallationManager by Composer.
+     *
+     * @param Composer $composer
+     * @param IOInterface $io
+     * @return void
+     */
+    public function deactivate(Composer $composer, IOInterface $io): void
+    {
+        // No cleanup needed when the plugin is deactivated
+    }
 
-        if (array_key_exists($baseType, $this->supportedTypes)) {
-            $supportedType = $baseType;
-        }
-
-        return $supportedType;
+    /**
+     * Prepare the plugin to be uninstalled
+     *
+     * This method is called when the plugin itself is being uninstalled.
+     * No cleanup is needed as this plugin doesn't create any persistent resources.
+     * The actual uninstallation of packages installed by this plugin is handled
+     * by the InstallerPlugin::uninstall method.
+     *
+     * @param Composer $composer
+     * @param IOInterface $io
+     * @return void
+     */
+    public function uninstall(Composer $composer, IOInterface $io): void
+    {
+        // No cleanup needed when the plugin itself is uninstalled
     }
 }

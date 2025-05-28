@@ -1,16 +1,20 @@
 {
     "name": "blesta/composer-installer",
-    "type": "composer-installer",
+    "type": "composer-plugin",
+    "description": "A library for installing Blesta extensions using Composer",
     "license": "MIT",
     "require": {
-        "composer/installers": "~1.0",
-        "php": ">=5.3"
+        "composer/installers": "^2.0",
+        "php": ">=8.1",
+        "composer-plugin-api": "^2.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.6",
-        "squizlabs/php_codesniffer": "~2.2",
-        "composer/composer": "1.0.*@dev",
-        "satooshi/php-coveralls": "dev-master"
+        "phpunit/phpunit": "^10.5",
+        "squizlabs/php_codesniffer": "^3.13",
+        "composer/composer": "^2.0",
+        "phpstan/phpstan": "^2.1",
+        "phpcompatibility/php-compatibility": "^9.3",
+        "php-coveralls/php-coveralls": "^2.8"
     },
     "autoload": {
         "psr-4": {
@@ -24,5 +28,17 @@
     },
     "extra": {
         "class": "Blesta\\Composer\\Installer\\Installer"
+    },
+    "scripts": {
+        "cs-check": "phpcs --standard=PSR12 src/ tests/",
+        "cs-fix": "phpcbf --standard=PSR12 src/ tests/",
+        "analyze": "phpstan analyse -l 7 src/ tests/",
+        "compat": "phpcs --standard=PSR12 --runtime-set testVersion 8.1- src/ tests/",
+        "test": "phpunit"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
     }
 }

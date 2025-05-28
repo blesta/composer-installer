@@ -1,9 +1,14 @@
 # Composer Installer
 
-[![Build Status](https://travis-ci.org/blesta/composer-installer.svg)](https://travis-ci.org/blesta/composer-installer)
+[![Tests](https://github.com/blesta/composer-installer/actions/workflows/tests.yml/badge.svg)](https://github.com/blesta/composer-installer/actions/workflows/tests.yml)
 [![Coverage Status](https://coveralls.io/repos/blesta/composer-installer/badge.svg?branch=master&service=github)](https://coveralls.io/github/blesta/composer-installer?branch=master)
 
 A library for installing Blesta extensions using [composer](http://getcomposer.org).
+
+## Requirements
+
+- PHP 8.1 or later
+- Composer 2.0 or later
 
 ## Usage
 
@@ -13,7 +18,7 @@ and tell composer which type of extension you've created.
 ```json
     "type": "blesta-plugin",
     "require": {
-        "blesta/composer-installer": "~1.0"
+        "blesta/composer-installer": "~2.0"
     }
 ```
 
@@ -34,5 +39,7 @@ See below for a complete list of supported types, and choose the appropriate one
     - Use for [Invoice Templates](https://docs.blesta.com/display/dev/Invoice+Templates)
 - **blesta-report**
     - Use for Reports
+- **blesta-messenger**
+    - Use for [Messengers](https://docs.blesta.com/display/dev/Messengers)
 
 Now list your extension with [packagist](http://packagist.org) (the default composer repository) and anyone can install your extension with composer!

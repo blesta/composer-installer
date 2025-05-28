@@ -1,11 +1,15 @@
 <?php
+
 namespace Blesta\Composer\Installer;
 
 use Composer\Installers\BaseInstaller;
 
 class BlestaInstaller extends BaseInstaller
 {
-    protected $locations = array(
+    /**
+     * @var array<string, string>
+     */
+    protected $locations = [
         'plugin' => 'plugins/{$name}/',
         'gateway-merchant' => 'components/gateways/merchant/{$name}/',
         'gateway-nonmerchant' => 'components/gateways/nonmerchant/{$name}/',
@@ -13,5 +17,5 @@ class BlestaInstaller extends BaseInstaller
         'messenger' => 'components/messengers/{$name}/',
         'invoice-template' => 'components/invoice_templates/{$name}/',
         'report' => 'components/reports/{$name}/',
-    );
+    ];
 }

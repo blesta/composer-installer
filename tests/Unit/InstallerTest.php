@@ -1,165 +1,111 @@
 <?php
+
 namespace Blesta\Composer\Installer\Tests\Unit;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Blesta\Composer\Installer\Installer;
+use Blesta\Composer\Installer\InstallerPlugin;
 use Composer\Composer;
 use Composer\Config;
+use Composer\IO\IOInterface;
+use Composer\Installer\InstallationManager;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
- * @coversDefaultClass \Blesta\Composer\Installer\Installer
+ * @covers \Blesta\Composer\Installer\Installer
  */
-class InstallerTest extends PHPUnit_Framework_TestCase
+class InstallerTest extends TestCase
 {
-    private $io;
-    private $composer;
+    private IOInterface|MockObject $io;
+    private Composer|MockObject $composer;
+    private Config $config;
+    private InstallationManager|MockObject $installationManager;
 
-    public function setUp()
+    protected function setUp(): void
     {
-        $this->io = $this->getMockBuilder('\Composer\IO\IOInterface')
-            ->getMock();
-        $this->composer = new Composer();
+        $this->io = $this->createMock(IOInterface::class);
+        $this->composer = $this->createMock(Composer::class);
         $this->config = new Config();
-        $this->composer->setConfig($this->config);
+        $this->installationManager = $this->createMock(InstallationManager::class);
+
+        $this->composer->expects($this->any())
+            ->method('getConfig')
+            ->willReturn($this->config);
+        $this->composer->expects($this->any())
+            ->method('getInstallationManager')
+            ->willReturn($this->installationManager);
     }
 
     /**
-     * @covers ::getInstallPath
-     * @covers ::supportedType
-     * @dataProvider installPathProvider
+     * Test activate method
      */
-    public function testGetInstallPath($packageType, $expected)
+    public function testActivate(): void
     {
-        $installer = new Installer($this->io, $this->composer);
+        $installer = new Installer();
 
-        $package = $this->getMockBuilder('Composer\Package\PackageInterface')
-            ->getMock();
-        $package->expects($this->any())
-            ->method('getType')
-            ->will($this->returnValue($packageType));
-        $package->expects($this->any())
-            ->method('getPrettyName')
-            ->will($this->returnValue('vendor/name'));
+        /** @var InstallationManager|MockObject $installationManager */
+        $installationManager = $this->installationManager;
+        $installationManager->expects($this->once())
+            ->method('addInstaller')
+            ->with($this->isInstanceOf(InstallerPlugin::class));
 
-        $this->assertEquals($expected, $installer->getInstallPath($package));
+        $installer->activate($this->composer, $this->io);
+
+        // Verify that the properties are set correctly
+        $reflection = new \ReflectionClass($installer);
+
+        $composerProperty = $reflection->getProperty('composer');
+        $composerProperty->setAccessible(true);
+        $this->assertSame($this->composer, $composerProperty->getValue($installer));
+
+        $ioProperty = $reflection->getProperty('io');
+        $ioProperty->setAccessible(true);
+        $this->assertSame($this->io, $ioProperty->getValue($installer));
+
+        $installerProperty = $reflection->getProperty('installer');
+        $installerProperty->setAccessible(true);
+        $this->assertInstanceOf(InstallerPlugin::class, $installerProperty->getValue($installer));
     }
 
     /**
-     * Data provider for testGetInstallPath
-     *
-     * @return array
+     * Test deactivate method
      */
-    public function installPathProvider()
+    public function testDeactivate(): void
     {
-        return array(
-            array('blesta-plugin', 'plugins/name/'),
-            array('blesta-module', 'components/modules/name/'),
-            array('blesta-messenger', 'components/messenger/name/'),
-            array('blesta-gateway-merchant', 'components/gateways/merchant/name/'),
-            array('blesta-gateway-nonmerchant', 'components/gateways/nonmerchant/name/'),
-            array('blesta-invoice-template', 'components/invoice_templates/name/'),
-            array('blesta-report', 'components/reports/name/')
-        );
+        $installer = new Installer();
+
+        // Set up expectations for deactivation
+        /** @var InstallationManager|MockObject $installationManager */
+        $installationManager = $this->installationManager;
+
+        // Verify it doesn't throw, as this method does nothing
+        $installationManager->expects($this->never())
+            ->method('removeInstaller');
+
+        $installer->deactivate($this->composer, $this->io);
+
+        // Since deactivate is currently a no-op, we're just testing it doesn't throw
+        $this->addToAssertionCount(1);
     }
 
     /**
-     * @covers ::getInstallPath
-     * @covers ::supportedType
-     * @expectedException \InvalidArgumentException
+     * Test uninstall method
      */
-    public function testGetInstallPathException()
+    public function testUninstall(): void
     {
-        $installer = new Installer($this->io, $this->composer);
+        $installer = new Installer();
 
-        $package = $this->getMockBuilder('Composer\Package\PackageInterface')
-            ->getMock();
-        $package->expects($this->any())
-            ->method('getType')
-            ->will($this->returnValue('invalid'));
-        $installer->getInstallPath($package);
-    }
+        // Set up expectations for uninstallation
+        /** @var InstallationManager|MockObject $installationManager */
+        $installationManager = $this->installationManager;
 
-    /**
-     * @covers ::uninstall
-     * @covers ::getInstallPath
-     * @covers ::supportedType
-     */
-    public function testUninstall()
-    {
-        $installer = new Installer($this->io, $this->composer);
+        // Verify it doesn't throw, as this method does nothing
+        $installationManager->expects($this->never())
+            ->method('removeInstaller');
 
-        $this->io->expects($this->once())
-            ->method('write');
+        $installer->uninstall($this->composer, $this->io);
 
-        $package = $this->getMockBuilder('Composer\Package\PackageInterface')
-            ->getMock();
-        $package->expects($this->any())
-            ->method('getType')
-            ->will($this->returnValue('blesta-plugin'));
-
-        $repo = $this->getMockBuilder('Composer\Repository\InstalledRepositoryInterface')
-            ->getMock();
-        $repo->expects($this->once())
-            ->method('removePackage')
-            ->with($this->equalTo($package));
-        $repo->expects($this->once())
-            ->method('hasPackage')
-            ->with($this->equalTo($package))
-            ->will($this->returnValue(true));
-
-        $installer->uninstall($repo, $package);
-    }
-
-    /**
-     * @covers ::uninstall
-     * @expectedException \InvalidArgumentException
-     */
-    public function testUninstallException()
-    {
-        $installer = new Installer($this->io, $this->composer);
-
-        $package = $this->getMockBuilder('Composer\Package\PackageInterface')
-            ->getMock();
-        $repo = $this->getMockBuilder('Composer\Repository\InstalledRepositoryInterface')
-            ->getMock();
-        $repo->expects($this->once())
-            ->method('hasPackage')
-            ->will($this->returnValue(false));
-
-        $installer->uninstall($repo, $package);
-    }
-
-    /**
-     * @covers ::supports
-     * @covers ::supportedType
-     * @dataProvider packageTypeProvider
-     * @param string $packageType
-     * @param boolean $expected
-     */
-    public function testSupports($packageType, $expected)
-    {
-        $installer = new Installer($this->io, $this->composer);
-
-        $this->assertEquals($expected, $installer->supports($packageType));
-    }
-
-    /**
-     * Data provider for testSupports
-     *
-     * @return array
-     */
-    public function packageTypeProvider()
-    {
-        return array(
-            array('blesta-plugin', true),
-            array('blesta-module', true),
-            array('blesta-messenger', true),
-            array('blesta-gateway-merchant', true),
-            array('blesta-gateway-nonmerchant', true),
-            array('blesta-invoice-template', true),
-            array('blesta-report', true),
-            array('blesta-', false),
-            array('blesta', false)
-        );
+        // Since uninstall is currently a no-op, we're just testing it doesn't throw
+        $this->addToAssertionCount(1);
     }
 }

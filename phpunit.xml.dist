@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit
-    bootstrap="./vendor/autoload.php"
-    backupGlobals="false"
-    beStrictAboutTestsThatDoNotTestAnything="true"
-    checkForUnintentionallyCoveredCode="true"
-    forceCoversAnnotation="true"
->
-    <testsuites>
-        <testsuite name="Unit">
-            <directory suffix=".php">tests/Unit</directory>
-        </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">src</directory>
-        </whitelist>
-    </filter>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.1/phpunit.xsd" bootstrap="./vendor/autoload.php" cacheDirectory=".phpunit.cache" executionOrder="depends,defects" beStrictAboutOutputDuringTests="true" failOnRisky="true" failOnWarning="true">
+  <testsuites>
+    <testsuite name="Unit">
+      <directory suffix=".php">tests/Unit</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </source>
 </phpunit>

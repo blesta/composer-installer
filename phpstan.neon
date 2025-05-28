@@ -1,0 +1,10 @@
+parameters:
+  level: 7
+  paths:
+    - src
+    - tests
+  excludePaths:
+    - vendor
+  ignoreErrors:
+    - '#Parameter \#\d+ \$\w+ of (class|method) .+ expects .+, .+\|PHPUnit\\Framework\\MockObject\\MockObject given\.#'
+    - '#Call to an undefined method .+\|PHPUnit\\Framework\\MockObject\\MockObject::expects\(\)\.#'
