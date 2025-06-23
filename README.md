@@ -22,6 +22,8 @@ See below for a complete list of supported types, and choose the appropriate one
 
 **Supported Types**
 
+- **blesta-language**
+    - Used only for [blesta/language](https://github.com/blesta/language)
 - **blesta-plugin**
     - Use for [Plugins](https://docs.blesta.com/display/dev/Plugins)
 - **blesta-module**
